@@ -5,6 +5,63 @@
 		FROM {table}
 		WHERE {conditions}
 	</Query>
+  <Query name="DropTable0">
+    drop table collect_pet_info
+  </Query>
+  <Query name="DropTable1">
+    drop table comment_pet
+  </Query>
+  <Query name="DropTable2">
+    drop table like_pet
+  </Query>
+  <Query name="DropTable3">
+    drop table comment_post
+  </Query>
+  <Query name="DropTable4">
+    drop table like_post
+  </Query>
+  <Query name="DropTable5">
+    drop table appointment
+  </Query>
+  <Query name="DropTable6">
+    drop table accommodate
+  </Query>
+  <Query name="DropTable7">
+    drop table foster
+  </Query>
+  <Query name="DropTable8">
+    drop table adopt
+  </Query>
+  <Query name="DropTable9">
+    drop table adopt_apply
+  </Query>
+  <Query name="DropTable10">
+    drop table donation
+  </Query>
+  <Query name="DropTable11">
+    drop table post_images
+  </Query>
+  <Query name="DropTable12">
+    drop table forum_posts
+  </Query>
+  <Query name="DropTable13">
+    drop table bulletin
+  </Query>
+  <Query name="DropTable14">
+    drop table employee
+  </Query>
+  <Query name="DropTable15">
+    drop table vet
+  </Query>
+  <Query name="DropTable16">
+    drop table room
+  </Query>
+  <Query name="DropTable17">
+    drop table pet
+  </Query>
+  <Query name="DropTable18">
+    drop table user2
+  </Query>
 	<Query name="CreateTable0">
     create table user2(--since table name 'user' is not valid in that it'a a internal name of system
     user_id varchar2(20) not null,
@@ -344,19 +401,7 @@
   create or replace view user_profile as select user2.user_id,coalesce(sum(forum_posts.like_num),0) as total_like,coalesce(sum(forum_posts.comment_num),0) as total_comment,
   coalesce(sum(forum_posts.read_count),0) as clicks
   from user2 left outer join forum_posts on forum_posts.user_id=user2.user_id
-  group by user2.user_id order by total_like*10+total_comment*20+clicks desc;
-  create or replace
-  TRIGGER trg_check_foster_censor_state
-  AFTER UPDATE ON foster
-  FOR EACH ROW
-  BEGIN
-  -- 当censor_state由'legitimate'变为'outdated'
-  IF :NEW.censor_state = 'outdated' OR :NEW.censor_state = 'aborted' THEN
-  -- 删除对应的accommodate表中宠物与用户ID相同的条目
-  DELETE FROM accommodate
-  WHERE pet_id = :NEW.pet_id AND owner_id = :NEW.fosterer;
-  END IF;
-  END
+  group by user2.user_id order by total_like*10+total_comment*20+clicks desc
 </Query>
 <Query name="CreateView3">
   create or replace view  pet_profile as SELECT
@@ -501,6 +546,7 @@
     END;
   </Query>
   <Query name="CreateSchedule2">
+    BEGIN
     DBMS_SCHEDULER.DROP_JOB(
     job_name        => 'RESUME_WARNED_ACCOUNT_JOB',
     force           => FALSE,
@@ -509,6 +555,7 @@
     END;
   </Query>
   <Query name="CreateSchedule3">
+    BEGIN
     DBMS_SCHEDULER.CREATE_JOB (
     job_name        => 'RESUME_WARNED_ACCOUNT_JOB',
     job_type        => 'PLSQL_BLOCK',

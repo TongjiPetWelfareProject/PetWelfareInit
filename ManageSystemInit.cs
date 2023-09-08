@@ -104,7 +104,7 @@ namespace Database_CourseDesign
                 Console.WriteLine(userID + " 连接数据库失败: " + ex.Message);
                 return;
             }
-
+            DropTable(managerConnection, userID);
             InitTable(managerConnection, userID);
             InitSequence(managerConnection, userID);
             InitTrigger(managerConnection, userID);
@@ -116,6 +116,33 @@ namespace Database_CourseDesign
             //关闭数据库连接
             systemConnection.Close();
         }
+
+        private void DropTable(OracleConnection connection, string userID)
+        {
+            Console.WriteLine(userID + " 开始删除旧数据库表");
+            XDocument doc = XDocument.Load(path + "\\SQLXML.xml");
+            for (int i = 0; i < 19; i++)
+            {
+                try
+                {
+                    string sql = doc.Descendants("Query").Where(x => (string)x.Attribute("name") == ("DropTable" + i.ToString())).FirstOrDefault()?.Value;
+                    OracleCommand command = new OracleCommand(sql, connection);
+                    command.ExecuteNonQuery();
+                }
+                catch (OracleException ex)
+                {
+                    if (ex.Code == 955)
+                    {
+                        Console.WriteLine(i.ToString() + " 不存在该表");
+                    }
+                    else
+                    {
+                        Console.WriteLine(i.ToString() + " exception: " + ex.Message);
+                    }
+                }
+            }
+        }
+
         private void InitFunc(OracleConnection connection, string userID)
         {
             Console.WriteLine(userID + " 开始创建数据库函数");
