@@ -212,7 +212,11 @@ namespace Database_CourseDesign
                 "GRANT CREATE SEQUENCE TO "+managerID,
                 "GRANT CREATE MATERIALIZED VIEW TO "+managerID,
                 $"CREATE OR REPLACE DIRECTORY my_dir AS '{picturePath}'--将D:// Desktop转化为存储图片的路径",
-                "GRANT READ, WRITE ON DIRECTORY my_dir TO "+managerID
+                "GRANT READ, WRITE ON DIRECTORY my_dir TO "+managerID,
+                "GRANT CREATE JOB TO "+managerID,
+                "GRANT CREATE EXTERNAL JOB TO "+managerID,
+                "GRANT EXECUTE ON DBMS_SCHEDULER TO "+managerID,
+                "GRANT MANAGE SCHEDULER TO "+managerID
             };
             CreateUser(connection, createManagerStr, grantManagerStrs, managerID);
             GrantUser(connection, createManagerStr, grantManagerStrs, managerID);
