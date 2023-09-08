@@ -511,8 +511,8 @@
         and censor_state='to be censored';
         update foster set censor_state='outdated' 
         WHERE TO_DATE(start_year || '-' || start_month || '-' || start_day, 'YYYY-MM-DD') + NUMTODSINTERVAL(duration, 'DAY') &lt; TRUNC(SYSDATE)
-        and censor_state='to be censored'
-    END LOOP
+        and censor_state='to be censored';
+    END LOOP;
     END;
   </Query>
   <Query name="CreateProcedure1">
